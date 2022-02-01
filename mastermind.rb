@@ -11,6 +11,9 @@ class Mastermind
     @colors = %w[r o y g b p]
     @colors_string = "roygbp"
     @code = []
+    @correct = 0
+    @incorrect = 0
+    @misplaced = 0
   end
 
   def generate_code
@@ -48,13 +51,20 @@ class Mastermind
   def evaluate_guess
     @guess.each_with_index do |value, index|
       if value == @code[index]
-        puts "Guess #{value} at position #{index} is correct!"
-      elsif @code.include?(value)
-        puts "Guess #{value} is present but not at location #{index}!"
+        @correct += 1
+      elsif @code.none?(value)
+        @incorrect += 1
       else
-        puts "Guess #{value} is not present in the array!"
+        @misplaced += 1
       end
     end
+    puts "You have #{@correct} correctly placed pegs, #{@misplaced} misplaced pegs and #{@incorrect} incorrect pegs"
+  end
+
+  def reset_pegs
+    @correct = 0
+    @misplaced = 0
+    @incorrect = 0
   end
 
   def check_victory
@@ -65,6 +75,10 @@ class Mastermind
   end
 end
 
+class MastermindComputer < Mastermind
+
+end
+
 game = Mastermind.new
 game.generate_code
 
@@ -72,4 +86,5 @@ while game.game_won.zero? && game.move <= 12
   game.guess
   game.evaluate_guess
   game.check_victory
+  game.reset_pegs
 end
